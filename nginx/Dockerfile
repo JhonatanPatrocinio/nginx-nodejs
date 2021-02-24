@@ -6,6 +6,8 @@ COPY nginx.conf /etc/nginx/conf.d/
 
 RUN mkdir /var/www/html -p && touch /var/www/html/index.html
 
+RUN apk add --no-cache bash
+
 ENV DOCKERIZE_VERSION v0.6.1
 
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \

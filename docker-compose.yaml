@@ -2,21 +2,17 @@ version: '3'
 
 services:
   app:
-    build: 
-      context: node
+    image: jhonatanpatrocinio/codeeducation:app_node
     container_name: app_node
-    entrypoint: dockerize -wait tcp://db_node:3306 -timeout 120s node index.js
+    entrypoint: dockerize -wait tcp://db_node:3306 -timeout 120s docker-entrypoint.sh
+    command: bash -c "node index.js"
     networks: 
       - node-network
-    volumes: 
-      - ./node:/usr/src/app
     tty: true
     depends_on: 
       - db
-
   db:
-    build: 
-      context: mysql
+    image: jhonatanpatrocinio/codeeducation:db_node
     command: --innodb-use-native-aio=0 --default-authentication-plugin=mysql_native_password
     container_name: db_node
     restart: always
@@ -32,15 +28,14 @@ services:
       - node-network
 
   nginx:
-    build:
-      context: nginx
+    image: jhonatanpatrocinio/codeeducation:nginx_node
     container_name: nginx_node
     entrypoint: dockerize -wait http://app_node:3000/ -timeout 120s nginx -g 'daemon off';
     tty: true
     depends_on: 
       - db
       - app
-    networks: 
+    networks:
       - node-network
     ports: 
       - "8080:80"
